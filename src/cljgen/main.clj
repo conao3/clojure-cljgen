@@ -5,20 +5,28 @@
    [selmer.parser])
   (:gen-class))
 
-(defn- expand-path-home [path]
+(defn- expand-path-home
+  "Expand `~` with $HOME."
+  [path]
   (if (string/starts-with? path "~")
     (string/replace-first path "~" (System/getProperty "user.home"))
     path))
 
-(defn- expand-path [path]
+(defn- expand-path
+  "Expand file path."
+  [path]
   (-> path expand-path-home io/file .getCanonicalPath))
 
-(defn- directory-exists? [path]
+(defn- directory-exists?
+  "Predicate to return whether the directory exists or not."
+  [path]
   (let [file (java.io.File. path)]
     (and (-> file .exists)
          (-> file .isDirectory))))
 
-(defn- make-directory [path]
+(defn- make-directory
+  "Make directory with parents dir."
+  [path]
   (-> path java.io.File. .mkdirs))
 
 (defn- ensure-config-dir
@@ -29,7 +37,9 @@
       (make-directory path))
     path))
 
-(defn -main [& _args]
+(defn -main
+  "The entrypoint."
+  [& _args]
   (println "hello")
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
   (println (ensure-config-dir)))
