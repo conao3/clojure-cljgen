@@ -5,6 +5,9 @@
    [selmer.parser])
   (:gen-class))
 
+
+;;;; Utils
+
 (defn- expand-path-home
   "Expand `~` with $HOME."
   [path]
@@ -36,6 +39,9 @@
     (when-not (directory-exists? path)
       (make-directory path))
     path))
+
+
+;;;; Entrypoint
 
 (defn -main
   "The entrypoint."
