@@ -5,6 +5,8 @@
    [selmer.parser])
   (:gen-class))
 
+(set! *warn-on-reflection* true)
+
 
 ;;;; Utils
 
@@ -15,6 +17,7 @@
 
 (defn- config-file-path
   "Return file in config dir."
+  ^java.io.File
   [& paths]
   (apply io/file (home-path) ".config" "cljgen" paths))
 
