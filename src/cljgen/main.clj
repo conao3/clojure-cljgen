@@ -32,13 +32,17 @@
   [path]
   (-> path java.io.File. .mkdirs))
 
-(defn- ensure-config-dir
-  "Return config dir and create dir if it does not exists."
+(defn- ensure-dir
+  "Make directory if it does not exists."
+  [path]
+  (when-not (directory-exists? path)
+    (make-directory path))
+  path)
+
+(defn- config-dir-path
+  "Return config dir."
   []
-  (let [path (expand-path "~/.config/cljgen")]
-    (when-not (directory-exists? path)
-      (make-directory path))
-    path))
+  (expand-path "~/.config/cljgen"))
 
 
 ;;;; Entrypoint
@@ -48,4 +52,4 @@
   [& _args]
   (println "hello")
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
-  (println (ensure-config-dir)))
+  (println (ensure-dir (config-dir-path))))
