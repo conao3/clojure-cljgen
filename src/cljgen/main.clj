@@ -44,6 +44,11 @@
   []
   (expand-path "~/.config/cljgen"))
 
+(defn- template-dir-path
+  "Return template dir."
+  []
+  (expand-path "~/.config/cljgen/template"))
+
 
 ;;;; Entrypoint
 
