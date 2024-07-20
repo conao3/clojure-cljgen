@@ -1,33 +1,30 @@
 (ns cljgen.main
   (:require
    [clojure.java.io :as io]
+   [clojure.string :as string]
    [selmer.parser])
   (:gen-class))
 
 
 ;;;; Utils
 
-(defn- get-home
+(defn- home-path
   "Return $HOME."
   []
   (System/getProperty "user.home"))
 
-(defn- ensure-dir
-  "Return dir and make directory if it does not exists."
-  [dir]
-  (doto dir
-    (#(when-not (-> % .isDirectory)
-        (-> % .mkdirs)))))
-
-(defn- config-file
+(defn- config-file-path
   "Return file in config dir."
   [& paths]
-  (apply io/file (get-home) ".config" "cljgen" paths))
+  (apply io/file (home-path) ".config" "cljgen" paths))
 
-(defn- template-dir
-  "Return template dir."
+(defn- template-names
+  "Return all template names."
   []
-  (config-file "template"))
+  (->> (config-file-path "templates")
+       .list
+       (filter #(not (string/starts-with? % ".")))
+       (filter #(-> (config-file-path "templates" %) .isDirectory))))
 
 
 ;;;; Entrypoint
@@ -37,4 +34,4 @@
   [& _args]
   (println "hello")
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
-  (println (ensure-dir (template-dir))))
+  (println (template-names)))
