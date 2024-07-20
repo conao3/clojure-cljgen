@@ -1,48 +1,33 @@
 (ns cljgen.main
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as string]
    [selmer.parser])
   (:gen-class))
 
 
 ;;;; Utils
 
-(defn- expand-path-home
-  "Expand `~` with $HOME."
-  [path]
-  (if (string/starts-with? path "~")
-    (string/replace-first path "~" (System/getProperty "user.home"))
-    path))
-
-(defn- expand-path
-  "Expand file path."
-  [path]
-  (-> path expand-path-home io/file .getCanonicalPath))
-
-(defn- directory-exists?
-  "Predicate to return whether the directory exists or not."
-  [path]
-  (let [file (io/file path)]
-    (and (-> file .exists)
-         (-> file .isDirectory))))
+(defn- get-home
+  "Return $HOME."
+  []
+  (System/getProperty "user.home"))
 
 (defn- ensure-dir
-  "Make directory if it does not exists."
-  [path]
-  (when-not (directory-exists? path)
-    (io/make-parents path))
-  path)
+  "Return dir and make directory if it does not exists."
+  [dir]
+  (doto dir
+    (#(when-not (-> % .isDirectory)
+        (-> % .mkdirs)))))
 
-(defn- config-dir-path
-  "Return config dir."
-  []
-  (expand-path "~/.config/cljgen"))
+(defn- config-file
+  "Return file in config dir."
+  [& paths]
+  (apply io/file (get-home) ".config" "cljgen" paths))
 
-(defn- template-dir-path
+(defn- template-dir
   "Return template dir."
   []
-  (expand-path "~/.config/cljgen/template"))
+  (config-file "template"))
 
 
 ;;;; Entrypoint
@@ -52,4 +37,4 @@
   [& _args]
   (println "hello")
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
-  (println (ensure-dir (config-dir-path))))
+  (println (ensure-dir (template-dir))))
