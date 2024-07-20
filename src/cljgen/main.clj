@@ -23,7 +23,7 @@
 (defn- directory-exists?
   "Predicate to return whether the directory exists or not."
   [path]
-  (let [file (java.io.File. path)]
+  (let [file (io/file path)]
     (and (-> file .exists)
          (-> file .isDirectory))))
 
