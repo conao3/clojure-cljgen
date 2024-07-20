@@ -27,16 +27,11 @@
     (and (-> file .exists)
          (-> file .isDirectory))))
 
-(defn- make-directory
-  "Make directory with parents dir."
-  [path]
-  (-> path java.io.File. .mkdirs))
-
 (defn- ensure-dir
   "Make directory if it does not exists."
   [path]
   (when-not (directory-exists? path)
-    (make-directory path))
+    (io/make-parents path))
   path)
 
 (defn- config-dir-path
