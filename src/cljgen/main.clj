@@ -1,5 +1,6 @@
 (ns cljgen.main
   (:require
+   [babashka.cli :as cli]
    [clojure.java.io :as io]
    [clojure.string :as string]
    [selmer.parser])
@@ -32,9 +33,30 @@
 
 ;;;; Entrypoint
 
+(def cli-spec
+  {:spec
+   {:template {:desc "Template name"}}})
+
+(defn- get-help
+  "Return help as string."
+  [spec]
+  (string/join
+   "\n"
+   ["cljgen [OPTIONS...]"
+    ""
+    "OPTIONS:"
+    (cli/format-opts (assoc spec :order (keys (:spec spec))))]))
+
 (defn -main
   "The entrypoint."
   [& _args]
   (println "hello")
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
-  (println (template-names)))
+  (println (template-names))
+  (println *command-line-args*)
+  (let [opts (cli/parse-opts *command-line-args* cli-spec)]
+    (when (or (:help opts) (:h opts))
+      (println (get-help cli-spec))
+      (System/exit 1))
+
+    (println opts)))
