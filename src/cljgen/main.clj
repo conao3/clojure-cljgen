@@ -42,7 +42,7 @@
 
 (defn- emit-template
   "Emit template."
-  [template base-dir]
+  [template base-dir template-args]
   (let [template-dir (config-file-path "templates" template)
         template-dir-path (-> template-dir .toPath)]
     (doseq [^java.io.File template-file (file-seq template-dir)]
@@ -55,7 +55,7 @@
             (logging/info (format "Mkdir: %s" (str target-file-dir)))
             (-> target-file-dir .mkdirs))
           (logging/info (format "Write: %s" (str target-file)))
-          (spit target-file (slurp template-file)))))))
+          (spit target-file (selmer/render (slurp template-file) template-args)))))))
 
 ;;;; Entrypoint
 
@@ -93,4 +93,4 @@
                                  template-candidates))))
 
     (when template
-      (emit-template template change-dir))))
+      (emit-template template change-dir {}))))
