@@ -8,7 +8,6 @@
 
 (set! *warn-on-reflection* true)
 
-
 ;;;; Utils
 
 (defn- home-path
@@ -29,7 +28,6 @@
        .list
        (filter #(not (string/starts-with? % ".")))
        (filter #(-> (config-file-path "templates" %) .isDirectory))))
-
 
 ;;;; Entrypoint
 
