@@ -27,7 +27,8 @@
   (->> (config-file-path "templates")
        .list
        (filter #(not (string/starts-with? % ".")))
-       (filter #(-> (config-file-path "templates" %) .isDirectory))))
+       (filter #(-> (config-file-path "templates" %) .isDirectory))
+       set))
 
 ;;;; Entrypoint
 
@@ -45,6 +46,12 @@
     "OPTIONS:"
     (cli/format-opts (assoc spec :order (keys (:spec spec))))]))
 
+(defn- println-err
+  "`println' but into stderr."
+  [& args]
+  (binding [*out* *err*]
+    (apply println args)))
+
 (defn -main
   "The entrypoint."
   [& _args]
@@ -52,9 +59,16 @@
   (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
   (println (template-names))
   (println *command-line-args*)
-  (let [opts (cli/parse-opts *command-line-args* cli-spec)]
+  (let [opts (cli/parse-opts *command-line-args* cli-spec)
+        {:keys [template]} opts
+        template-candidates (template-names)]
     (when (or (:help opts) (:h opts))
-      (println (get-help cli-spec))
+      (println-err (get-help cli-spec))
       (System/exit 1))
 
-    (println opts)))
+    (println opts)
+    (when-not (contains? template-candidates template)
+      (println-err (format "%s is not defineded tempalte name.  Please specify one of %s"
+                           template
+                           template-candidates))
+      (System/exit 1))))
