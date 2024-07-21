@@ -4,7 +4,7 @@
    [clojure.java.io :as io]
    [clojure.string :as string]
    [clojure.tools.logging :as logging]
-   [selmer.parser])
+   [selmer.parser :as selmer])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
@@ -78,7 +78,7 @@
   "The entrypoint."
   [& _args]
   (println "hello")
-  (println (selmer.parser/render "Hello {{name}}" {:name "Yogthos"}))
+  (println (selmer/render "Hello {{name}}" {:name "Yogthos"}))
   (println (template-names))
   (println *command-line-args*)
   (let [opts (cli/parse-opts *command-line-args* cli-spec)
