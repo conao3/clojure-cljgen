@@ -4,10 +4,19 @@
    [clojure.java.io :as io]
    [clojure.string :as string]
    [clojure.tools.logging :as logging]
-   [selmer.parser :as selmer])
+   [selmer.parser :as selmer]
+   [selmer.util])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
+
+;;;; Selmer
+
+(defn missing-value-fn [tag _context-map]
+  (throw (Exception. (format "Missing value: %s"
+                             (or (:tag-value tag) (:tag-name tag))))))
+
+(selmer.util/set-missing-value-formatter! missing-value-fn)
 
 ;;;; Utils
 
