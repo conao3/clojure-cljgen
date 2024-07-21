@@ -99,7 +99,7 @@
 
     (println opts)
     (when-not (contains? template-candidates template)
-      (println-err (format "%s is not defineded tempalte name.  Please specify one of %s"
+      (println-err (format "%s is not defined template name.  Please specify one of %s"
                            template
                            template-candidates))
       (System/exit 1))
