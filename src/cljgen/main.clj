@@ -77,32 +77,20 @@
     "OPTIONS:"
     (cli/format-opts (assoc spec :order (keys (:spec spec))))]))
 
-(defn- println-err
-  "`println' but into stderr."
-  [& args]
-  (binding [*out* *err*]
-    (apply println args)))
-
 (defn -main
   "The entrypoint."
-  [& _args]
-  (println "hello")
-  (println (selmer/render "Hello {{name}}" {:name "Yogthos"}))
-  (println (template-names))
-  (println *command-line-args*)
-  (let [opts (cli/parse-opts *command-line-args* cli-spec)
+  [& args]
+  (let [opts (cli/parse-opts args cli-spec)
         {:keys [template change-dir]} opts
         template-candidates (template-names)]
     (when (or (:help opts) (:h opts))
-      (println-err (get-help cli-spec))
+      (println (get-help cli-spec))
       (System/exit 1))
 
-    (println opts)
     (when-not (contains? template-candidates template)
-      (println-err (format "%s is not defined template name.  Please specify one of %s"
-                           template
-                           template-candidates))
-      (System/exit 1))
+      (throw (Exception. (format "%s is not defined template name.  Please specify one of %s"
+                                 template
+                                 template-candidates))))
 
     (when template
       (emit-template template change-dir))))
