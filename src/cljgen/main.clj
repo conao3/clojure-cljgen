@@ -1,7 +1,7 @@
 (ns cljgen.main
   (:require
    [babashka.cli :as cli]
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [clojure.string :as string]
    [selmer.parser :as selmer]
    [selmer.util]
@@ -21,16 +21,11 @@
 
 ;;;; Utils
 
-(defn- home-path
-  "Return $HOME."
-  []
-  (System/getProperty "user.home"))
-
 (defn- config-file-path
   "Return file in config dir."
   ^java.io.File
   [& paths]
-  (apply io/file (home-path) ".config" "cljgen" paths))
+  (apply fs/file (fs/home) ".config" "cljgen" paths))
 
 (defn- template-names
   "Return all template names."
@@ -55,7 +50,7 @@
                  (not (= ".cljgen.yml" (-> template-file .getName))))
         (let [template-path (-> template-file .toPath)
               relative-path (-> template-dir-path (.relativize template-path))
-              target-file (io/file base-dir (str relative-path))
+              target-file (fs/file base-dir (str relative-path))
               target-file-dir (-> target-file .getParentFile)]
           (when-not (-> target-file-dir .isDirectory)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
@@ -77,7 +72,7 @@
     :change-dir {:desc "Expand directory (Default: current-directory)"
                  :alias :C
                  :default-desc "<dir>"
-                 :default (System/getProperty "user.dir")}}})
+                 :default (str (fs/cwd))}}})
 
 (defn- get-help
   "Return help as string."
