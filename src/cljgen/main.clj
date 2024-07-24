@@ -43,8 +43,7 @@
     (doseq [template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
-        (let [relative-path (fs/relativize template-dir template-file)
-              target-file (fs/file base-dir (str relative-path))
+        (let [target-file (fs/file base-dir (fs/relativize template-dir template-file))
               target-file-dir (fs/parent target-file)]
           (when-not (fs/directory? target-file-dir)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
