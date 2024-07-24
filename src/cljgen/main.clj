@@ -65,12 +65,18 @@
 ;;;; Entrypoint
 
 (def cli-spec
-  {:spec
-   {:template {:desc "Template name"}
+  {:restrict [:help :template :change-dir]
+   :spec
+   {:help {:desc "Show help"
+           :alias :h}
+    :template {:desc "Template name"
+               :validate {:pred #(contains? (template-names) %)
+                          :ex-msg #(format "Invalid template `%s'.  Valid values: (%s)"
+                                           % (string/join ", " (template-names)))}}
     :change-dir {:desc "Expand directory (Default: current-directory)"
-                 :alias :C}}
-   :exec-args
-   {:change-dir (System/getProperty "user.dir")}})
+                 :alias :C
+                 :default-desc "<dir>"
+                 :default (System/getProperty "user.dir")}}})
 
 (defn- get-help
   "Return help as string."
@@ -84,18 +90,14 @@
 
 (defn -main
   "The entrypoint."
-  [& args]
-  (let [opts (cli/parse-opts args cli-spec)
-        {:keys [template change-dir]} opts
-        template-candidates (template-names)]
-    (when (or (:help opts) (:h opts))
+  [& raw-args]
+  (let [{:keys [opts args]} (cli/parse-args raw-args cli-spec)
+        args (apply hash-map args)]
+    (logging/info opts args)
+
+    (when (:help opts)
       (println (get-help cli-spec))
       (System/exit 1))
 
-    (when-not (contains? template-candidates template)
-      (throw (Exception. (format "%s is not defined template name.  Please specify one of %s"
-                                 template
-                                 template-candidates))))
-
-    (when template
-      (emit-template template change-dir {}))))
+    (when (:template opts)
+      (emit-template (:template opts) (:change-dir opts) args))))
