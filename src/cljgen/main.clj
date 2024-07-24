@@ -40,7 +40,7 @@
   "Emit template."
   [template base-dir template-args]
   (let [template-dir (config-file-path "templates" template)]
-    (doseq [^java.io.File template-file (file-seq template-dir)]
+    (doseq [template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
         (let [relative-path (fs/relativize template-dir template-file)
