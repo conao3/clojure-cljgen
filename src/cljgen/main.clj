@@ -5,7 +5,8 @@
    [clojure.string :as string]
    [selmer.parser :as selmer]
    [selmer.util]
-   [clojure.tools.logging :as log])
+   [clojure.tools.logging :as log]
+   [clojure.edn :as edn])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
@@ -92,7 +93,10 @@
   "The entrypoint."
   [& raw-args]
   (let [{:keys [opts args]} (cli/parse-args raw-args cli-spec)
-        args (apply hash-map args)]
+        _ (when-not (= 1 (count args))
+            (log/error "Must specify 1 argument only")
+            (System/exit 1))
+        args (edn/read-string (first args))]
     (log/info opts args)
 
     (when (:help opts)
