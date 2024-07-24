@@ -23,7 +23,6 @@
 
 (defn- config-file-path
   "Return file in config dir."
-  ^java.io.File
   [& paths]
   (apply fs/file (fs/home) ".config" "cljgen" paths))
 
@@ -34,9 +33,9 @@
         template-dir-path (fs/path template-dir)]
     (->> template-dir
          file-seq
-         (filter #(= ".cljgen.yml" (-> ^java.io.File % fs/file-name)))
+         (filter #(= ".cljgen.yml" (-> % fs/file-name)))
          (map #(-> template-dir-path
-                   (fs/relativize (-> ^java.io.File % fs/parent fs/path))
+                   (fs/relativize (-> % fs/parent fs/path))
                    str))
          set)))
 
