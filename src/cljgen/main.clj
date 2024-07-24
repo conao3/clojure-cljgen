@@ -36,7 +36,7 @@
          file-seq
          (filter #(= ".cljgen.yml" (-> ^java.io.File % .getName)))
          (map #(-> template-dir-path
-                   (.relativize (-> ^java.io.File % .getParentFile fs/path))
+                   (.relativize (-> ^java.io.File % fs/parent fs/path))
                    str))
          set)))
 
@@ -51,7 +51,7 @@
         (let [template-path (-> template-file fs/path)
               relative-path (-> template-dir-path (.relativize template-path))
               target-file (fs/file base-dir (str relative-path))
-              target-file-dir (-> target-file .getParentFile)]
+              target-file-dir (-> target-file fs/parent)]
           (when-not (-> target-file-dir .isDirectory)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
             (-> target-file-dir .mkdirs))
