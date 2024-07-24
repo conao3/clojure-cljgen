@@ -31,12 +31,12 @@
   "Return all template names."
   []
   (let [template-dir (config-file-path "templates")
-        template-dir-path (-> template-dir .toPath)]
+        template-dir-path (fs/path template-dir)]
     (->> template-dir
          file-seq
          (filter #(= ".cljgen.yml" (-> ^java.io.File % .getName)))
          (map #(-> template-dir-path
-                   (.relativize (-> ^java.io.File % .getParentFile .toPath))
+                   (.relativize (-> ^java.io.File % .getParentFile fs/path))
                    str))
          set)))
 
@@ -44,11 +44,11 @@
   "Emit template."
   [template base-dir template-args]
   (let [template-dir (config-file-path "templates" template)
-        template-dir-path (-> template-dir .toPath)]
+        template-dir-path (-> template-dir fs/path)]
     (doseq [^java.io.File template-file (file-seq template-dir)]
       (when (and (-> template-file .isFile)
                  (not (= ".cljgen.yml" (-> template-file .getName))))
-        (let [template-path (-> template-file .toPath)
+        (let [template-path (-> template-file fs/path)
               relative-path (-> template-dir-path (.relativize template-path))
               target-file (fs/file base-dir (str relative-path))
               target-file-dir (-> target-file .getParentFile)]
