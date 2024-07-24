@@ -3,9 +3,9 @@
    [babashka.cli :as cli]
    [clojure.java.io :as io]
    [clojure.string :as string]
-   [clojure.tools.logging :as logging]
    [selmer.parser :as selmer]
-   [selmer.util])
+   [selmer.util]
+   [clojure.tools.logging :as log])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
@@ -57,9 +57,9 @@
               target-file (io/file base-dir (str relative-path))
               target-file-dir (-> target-file .getParentFile)]
           (when-not (-> target-file-dir .isDirectory)
-            (logging/info (format "Mkdir: %s" (str target-file-dir)))
+            (log/info (format "Mkdir: %s" (str target-file-dir)))
             (-> target-file-dir .mkdirs))
-          (logging/info (format "Write: %s" (str target-file)))
+          (log/info (format "Write: %s" (str target-file)))
           (spit target-file (selmer/render (slurp template-file) template-args)))))))
 
 ;;;; Entrypoint
@@ -93,7 +93,7 @@
   [& raw-args]
   (let [{:keys [opts args]} (cli/parse-args raw-args cli-spec)
         args (apply hash-map args)]
-    (logging/info opts args)
+    (log/info opts args)
 
     (when (:help opts)
       (println (get-help cli-spec))
