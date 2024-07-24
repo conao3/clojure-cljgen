@@ -36,7 +36,7 @@
          file-seq
          (filter #(= ".cljgen.yml" (-> ^java.io.File % fs/file-name)))
          (map #(-> template-dir-path
-                   (.relativize (-> ^java.io.File % fs/parent fs/path))
+                   (fs/relativize (-> ^java.io.File % fs/parent fs/path))
                    str))
          set)))
 
@@ -49,7 +49,7 @@
       (when (and (-> template-file .isFile)
                  (not (= ".cljgen.yml" (-> template-file fs/file-name))))
         (let [template-path (-> template-file fs/path)
-              relative-path (-> template-dir-path (.relativize template-path))
+              relative-path (-> template-dir-path (fs/relativize template-path))
               target-file (fs/file base-dir (str relative-path))
               target-file-dir (-> target-file fs/parent)]
           (when-not (-> target-file-dir .isDirectory)
