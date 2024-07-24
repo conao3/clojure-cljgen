@@ -21,7 +21,7 @@
 
 ;;;; Utils
 
-(defn- config-file-path
+(defn- config-file
   "Return file in config dir."
   [& paths]
   (apply fs/file (fs/home) ".config" "cljgen" paths))
@@ -29,7 +29,7 @@
 (defn- template-names
   "Return all template names."
   []
-  (let [template-dir (config-file-path "templates")]
+  (let [template-dir (config-file "templates")]
     (->> template-dir
          file-seq
          (filter #(= ".cljgen.yml" (fs/file-name %)))
@@ -39,7 +39,7 @@
 (defn- emit-template
   "Emit template."
   [template base-dir template-args]
-  (let [template-dir (config-file-path "templates" template)]
+  (let [template-dir (config-file "templates" template)]
     (doseq [template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
