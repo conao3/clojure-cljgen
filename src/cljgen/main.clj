@@ -29,24 +29,21 @@
 (defn- template-names
   "Return all template names."
   []
-  (let [template-dir (config-file-path "templates")
-        template-dir-path (fs/path template-dir)]
+  (let [template-dir (config-file-path "templates")]
     (->> template-dir
          file-seq
          (filter #(= ".cljgen.yml" (fs/file-name %)))
-         (map #(str (fs/relativize template-dir-path (fs/path (fs/parent %)))))
+         (map #(str (fs/relativize template-dir (fs/parent %))))
          set)))
 
 (defn- emit-template
   "Emit template."
   [template base-dir template-args]
-  (let [template-dir (config-file-path "templates" template)
-        template-dir-path (fs/path template-dir)]
+  (let [template-dir (config-file-path "templates" template)]
     (doseq [^java.io.File template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
-        (let [template-path (fs/path template-file)
-              relative-path (fs/relativize template-dir-path template-path)
+        (let [relative-path (fs/relativize template-dir template-file)
               target-file (fs/file base-dir (str relative-path))
               target-file-dir (fs/parent target-file)]
           (when-not (fs/directory? target-file-dir)
