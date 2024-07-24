@@ -54,7 +54,7 @@
               target-file-dir (-> target-file fs/parent)]
           (when-not (-> target-file-dir .isDirectory)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
-            (-> target-file-dir .mkdirs))
+            (-> target-file-dir fs/create-dirs))
           (log/info (format "Write: %s" (str target-file)))
           (spit target-file (selmer/render (slurp template-file) template-args)))))))
 
