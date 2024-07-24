@@ -46,13 +46,13 @@
   (let [template-dir (config-file-path "templates" template)
         template-dir-path (-> template-dir fs/path)]
     (doseq [^java.io.File template-file (file-seq template-dir)]
-      (when (and (-> template-file .isFile)
+      (when (and (-> template-file fs/regular-file?)
                  (not (= ".cljgen.yml" (-> template-file fs/file-name))))
         (let [template-path (-> template-file fs/path)
               relative-path (-> template-dir-path (fs/relativize template-path))
               target-file (fs/file base-dir (str relative-path))
               target-file-dir (-> target-file fs/parent)]
-          (when-not (-> target-file-dir .isDirectory)
+          (when-not (-> target-file-dir fs/directory?)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
             (-> target-file-dir fs/create-dirs))
           (log/info (format "Write: %s" (str target-file)))
