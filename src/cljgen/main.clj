@@ -33,27 +33,25 @@
         template-dir-path (fs/path template-dir)]
     (->> template-dir
          file-seq
-         (filter #(= ".cljgen.yml" (-> % fs/file-name)))
-         (map #(-> template-dir-path
-                   (fs/relativize (-> % fs/parent fs/path))
-                   str))
+         (filter #(= ".cljgen.yml" (fs/file-name %)))
+         (map #(str (fs/relativize template-dir-path (fs/path (fs/parent %)))))
          set)))
 
 (defn- emit-template
   "Emit template."
   [template base-dir template-args]
   (let [template-dir (config-file-path "templates" template)
-        template-dir-path (-> template-dir fs/path)]
+        template-dir-path (fs/path template-dir)]
     (doseq [^java.io.File template-file (file-seq template-dir)]
-      (when (and (-> template-file fs/regular-file?)
-                 (not (= ".cljgen.yml" (-> template-file fs/file-name))))
-        (let [template-path (-> template-file fs/path)
-              relative-path (-> template-dir-path (fs/relativize template-path))
+      (when (and (fs/regular-file? template-file)
+                 (not (= ".cljgen.yml" (fs/file-name template-file))))
+        (let [template-path (fs/path template-file)
+              relative-path (fs/relativize template-dir-path template-path)
               target-file (fs/file base-dir (str relative-path))
-              target-file-dir (-> target-file fs/parent)]
-          (when-not (-> target-file-dir fs/directory?)
+              target-file-dir (fs/parent target-file)]
+          (when-not (fs/directory? target-file-dir)
             (log/info (format "Mkdir: %s" (str target-file-dir)))
-            (-> target-file-dir fs/create-dirs))
+            (fs/create-dirs target-file-dir))
           (log/info (format "Write: %s" (str target-file)))
           (spit target-file (selmer/render (slurp template-file) template-args)))))))
 
