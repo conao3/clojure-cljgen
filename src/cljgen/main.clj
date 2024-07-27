@@ -21,15 +21,10 @@
 
 ;;;; Utils
 
-(defn- config-file
-  "Return file in config dir."
-  [& paths]
-  (apply fs/file (fs/home) ".config" "cljgen" paths))
-
 (defn- template-names
   "Return all template names."
-  []
-  (let [template-dir (config-file "templates")]
+  [config-dir]
+  (let [template-dir (fs/file config-dir "templates")]
     (->> template-dir
          file-seq
          (filter #(= ".cljgen.yml" (fs/file-name %)))
@@ -38,8 +33,8 @@
 
 (defn- emit-template
   "Emit template."
-  [template base-dir template-args]
-  (let [template-dir (config-file "templates" template)]
+  [template base-dir config-dir template-args]
+  (let [template-dir (fs/file config-dir "templates" template)]
     (doseq [template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
@@ -51,14 +46,14 @@
 ;;;; Entrypoint
 
 (def cli-spec
-  {:restrict [:help :template :change-dir]
+  {:restrict [:help :config-dir :template :change-dir]
    :spec
    {:help {:desc "Show help"
            :alias :h}
-    :template {:desc "Template name"
-               :validate {:pred #(contains? (template-names) %)
-                          :ex-msg #(format "Invalid template `%s'.  Valid values: (%s)"
-                                           % (string/join ", " (template-names)))}}
+    :config-dir {:desc "Template dir"
+                 :default-desc "<dir>"
+                 :default (str (fs/file (fs/home) ".config" "cljgen"))}
+    :template {:desc "Template name"}
     :change-dir {:desc "Expand directory (Default: current-directory)"
                  :alias :C
                  :default-desc "<dir>"
@@ -78,15 +73,21 @@
   "The entrypoint."
   [& raw-args]
   (let [{:keys [opts args]} (cli/parse-args raw-args cli-spec)
-        _ (when-not (= 1 (count args))
-            (log/error "Must specify 1 argument only")
-            (System/exit 1))
-        args (edn/read-string (first args))]
-    (log/info opts args)
+        [cmd & args] args
+        config-dir (if (fs/absolute? (:config-dir opts))
+                     (:config-dir opts)
+                     (str (fs/file (fs/cwd) (:config-dir opts))))]
+    (log/info opts args config-dir)
 
     (when (:help opts)
       (println (get-help cli-spec))
       (System/exit 1))
 
-    (when (:template opts)
-      (emit-template (:template opts) (:change-dir opts) args))))
+    (case cmd
+      "gen" (let [args (edn/read-string (first args))]
+              (emit-template (:template opts) (:change-dir opts) config-dir args))
+      "list" (doseq [elm (template-names config-dir)]
+               (println elm))
+      (do (log/error (format "`%s' is undefined command.  Please specify one of %s"
+                             cmd ["gen" "list"]))
+          (System/exit 1)))))
