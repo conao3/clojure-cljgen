@@ -18,11 +18,28 @@ Show help.
 ### `--config-dir <dir>` (default: `~/.config/cljgen`)
 Specify config dir.
 
+# Config dir
+Config dir is below structure.
+
+- `template` folder is required.
+- You can put any directory in between. (and this structure into template name)
+- `.cljgen.yml` is marker file to indicate template base-dir.
+```
+<config-dir>
+└── template
+    └── <path/to/any/template>
+       └── <template-name>
+          ├── .cljgen.yml
+          ├── ...
+          └── ...
+```
+
 # Sample
 ## sample/templates/file/readme
 Simple one-file example.
 ```
 sample/templates/file/readme/
+├── .cljgen.yml
 └── README.md
 ```
 
@@ -30,6 +47,7 @@ sample/templates/file/readme/
 Simple project.
 ```
 sample/templates/project/c/
+├── .cljgen.yml
 ├── Makefile
 └── src
     └── main.c
@@ -39,6 +57,7 @@ sample/templates/project/c/
 Simple project with parameterize path.
 ```
 sample/templates/project/clojure/
+├── .cljgen.yml
 ├── deps.edn
 ├── Makefile
 ├── src
