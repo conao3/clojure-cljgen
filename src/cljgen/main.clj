@@ -58,7 +58,7 @@
     :change-dir {:desc "Expand directory (Default: current-directory)"
                  :alias :C
                  :default-desc "<dir>"
-                 :default (str (fs/cwd))}}})
+                 :default "."}}})
 
 (defn- get-help
   "Return help as string."
@@ -83,7 +83,7 @@
         [cmd & args] args
         config-dir (if (fs/absolute? (:config-dir opts))
                      (:config-dir opts)
-                     (str (fs/file (fs/cwd) (:config-dir opts))))]
+                     (str (fs/file (:config-dir opts))))]
     (when (:help opts)
       (println (get-help cli-spec))
       (System/exit 1))
