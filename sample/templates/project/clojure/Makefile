@@ -12,7 +12,7 @@ clean:
 
 .PHONY: build
 build: clean
-	clean -T:build uverjar
+	clean -T:build uberjar
 
 .PHONY: build.native
 build.native: target/${TARGET}
