@@ -1,4 +1,4 @@
-(ns {{ repo-name }}.main
+(ns {{ repo-name }}.core
   (:require
    [clojure.tools.logging :as log])
   (:gen-class))

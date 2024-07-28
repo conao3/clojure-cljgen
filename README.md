@@ -67,8 +67,8 @@ sample/templates/project/clojure/
 ├── Makefile
 ├── src
 │   └── {{repo-name}}
-│       └── main.clj
+│       └── core.clj
 └── test
     └── {{repo-name}}
-        └── main_test.clj
+        └── core_test.clj
 ```

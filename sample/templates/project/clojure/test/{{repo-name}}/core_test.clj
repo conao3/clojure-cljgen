@@ -1,4 +1,4 @@
-(ns {{ repo-name }}.main-test
+(ns {{ repo-name }}.core-test
   (:require
    [clojure.test :as t]))
 
