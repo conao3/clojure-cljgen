@@ -84,8 +84,6 @@
         config-dir (if (fs/absolute? (:config-dir opts))
                      (:config-dir opts)
                      (str (fs/file (fs/cwd) (:config-dir opts))))]
-    (log/info opts args config-dir)
-
     (when (:help opts)
       (println (get-help cli-spec))
       (System/exit 1))
