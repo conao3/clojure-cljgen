@@ -41,7 +41,10 @@ Simple project with parameterize path.
 sample/templates/project/clojure/
 ├── deps.edn
 ├── Makefile
-└── src
+├── src
+│   └── {{repo-name}}
+│       └── main.clj
+└── test
     └── {{repo-name}}
-        └── main.clj
+        └── main_test.clj
 ```

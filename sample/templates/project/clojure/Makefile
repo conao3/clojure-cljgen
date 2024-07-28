@@ -2,6 +2,10 @@ all:
 
 TARGET := {{ repo-name }}
 
+.PHONY: test
+test:
+	clj -M:test
+
 .PHONY: clean
 clean:
 	rm -rf target
