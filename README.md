@@ -11,6 +11,11 @@ Generate template.
 - `--template <template>`: Specify template name to generate.
 - `-C, --change-dir <dir>` (default: `current-directory`): Specify directory to generate basedir.
 
+Specify parameters via edn style.
+```
+cljgen gen --template project/clojure '{:repo-name "cljgen"}'
+```
+
 ## Global options
 ### `-h, --help`
 Show help.
