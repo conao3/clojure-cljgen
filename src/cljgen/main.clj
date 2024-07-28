@@ -38,7 +38,8 @@
     (doseq [template-file (file-seq template-dir)]
       (when (and (fs/regular-file? template-file)
                  (not (= ".cljgen.yml" (fs/file-name template-file))))
-        (let [target-file (fs/file base-dir (fs/relativize template-dir template-file))]
+        (let [target-file_ (fs/file base-dir (fs/relativize template-dir template-file))
+              target-file (fs/file (selmer/render (str target-file_) template-args))]
           (fs/create-dirs (fs/parent target-file))
           (log/info (format "Write: %s" (str target-file)))
           (spit target-file (selmer/render (slurp template-file) template-args)))))))
