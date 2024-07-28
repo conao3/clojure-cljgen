@@ -1,32 +1,32 @@
 # clojure-cljgen
 
-## Usage
-### Subcommand
-#### `list`
+# Usage
+## Subcommand
+### `list`
 List template names.
 
-#### `gen`
+### `gen`
 Generate template.
 
 - `--template <template>`: Specify template name to generate.
 - `-C, --change-dir <dir>` (default: `current-directory`): Specify directory to generate basedir.
 
-### Global options
-#### `-h, --help`
+## Global options
+### `-h, --help`
 Show help.
 
-#### `--config-dir <dir>` (default: `~/.config/cljgen`)
+### `--config-dir <dir>` (default: `~/.config/cljgen`)
 Specify config dir.
 
-## Sample
-### sample/templates/file/readme
+# Sample
+## sample/templates/file/readme
 Simple one-file example.
 ```
 sample/templates/file/readme/
 └── README.md
 ```
 
-### sample/template/project/c
+## sample/template/project/c
 Simple project.
 ```
 sample/templates/project/c/
@@ -35,7 +35,7 @@ sample/templates/project/c/
     └── main.c
 ```
 
-### sample/template/project/clojure
+## sample/template/project/clojure
 Simple project with parameterize path.
 ```
 sample/templates/project/clojure/
