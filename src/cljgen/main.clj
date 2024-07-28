@@ -69,6 +69,12 @@
     "OPTIONS:"
     (cli/format-opts (assoc spec :order (keys (:spec spec))))]))
 
+(defn- error-and-exit
+  "Emit error and exit."
+  [msg]
+  (log/error msg)
+  (System/exit 1))
+
 (defn -main
   "The entrypoint."
   [& raw-args]
@@ -85,9 +91,10 @@
 
     (case cmd
       "gen" (let [args (edn/read-string (first args))]
+              (when-not (:template opts)
+                (error-and-exit "Must specify --template argument."))
               (emit-template (:template opts) (:change-dir opts) config-dir args))
       "list" (doseq [elm (template-names config-dir)]
                (println elm))
-      (do (log/error (format "`%s' is undefined command.  Please specify one of %s"
-                             cmd ["gen" "list"]))
-          (System/exit 1)))))
+      (log/error (format "`%s' is undefined command.  Please specify one of %s"
+                         cmd ["gen" "list"])))))
