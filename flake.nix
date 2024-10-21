@@ -29,8 +29,7 @@
 
           jar = cljpkgs.mkCljBin {
             projectSrc = ./.;
-            name = "conao3/cljgen";
-            version = "0.1.0";
+            name = "com.github.conao3/cljgen";
             main-ns = "cljgen.main";
             jdkRunner = pkgs.jdk17_headless;
           };
