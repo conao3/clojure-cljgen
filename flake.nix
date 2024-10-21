@@ -29,6 +29,7 @@
               projectSrc = ./.;
               name = "cljgen";
               main-ns = "cljgen.main";
+              nativeImage.enable = true;
             }
           ];
         };
