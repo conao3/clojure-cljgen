@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    clj-nix.url = "github:jlesquembre/clj-nix";
+    clj-nix = {
+      url = "github:jlesquembre/clj-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, clj-nix }:
@@ -12,26 +15,30 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        cljpkgs = clj-nix.packages."${system}";
       in
       {
         devShell = pkgs.mkShell {
           buildInputs = [
             pkgs.clojure
             pkgs.openjdk
-            pkgs.leiningen
           ];
         };
 
-        packages.default = clj-nix.lib.mkCljApp {
-          pkgs = nixpkgs.legacyPackages.${system};
-          modules = [
-            {
-              projectSrc = ./.;
-              name = "cljgen";
-              main-ns = "cljgen.main";
-              nativeImage.enable = true;
-            }
-          ];
+        packages = rec {
+          default = native;
+
+          jar = cljpkgs.mkCljBin {
+            projectSrc = ./.;
+            name = "conao3/cljgen";
+            version = "0.1.0";
+            main-ns = "cljgen.main";
+            jdkRunner = pkgs.jdk17_headless;
+          };
+
+          native = cljpkgs.mkGraalBin {
+            cljDrv = self.packages."${system}".jar;
+          };
         };
       }
     );
