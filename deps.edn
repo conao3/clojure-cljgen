@@ -4,10 +4,4 @@
   selmer/selmer {:mvn/version "1.12.61"}
   org.babashka/cli {:mvn/version "0.8.59"}
   babashka/fs {:mvn/version "0.5.21"}
-  com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}
-
- :aliases
- {:build
-  {:deps {com.github.liquidz/build.edn
-          {:git/tag "0.11.257" :git/sha "4ba1985"}}
-   :ns-default build-edn.main}}}
+  com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}}
