@@ -10,7 +10,13 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, clj-nix }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      clj-nix,
+    }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
@@ -18,13 +24,6 @@
         cljpkgs = clj-nix.packages."${system}";
       in
       {
-        devShell = pkgs.mkShell {
-          buildInputs = [
-            pkgs.clojure
-            pkgs.openjdk
-          ];
-        };
-
         packages = rec {
           default = native;
 
@@ -40,6 +39,15 @@
             cljDrv = self.packages."${system}".jar;
           };
         };
+
+        devShell = pkgs.mkShell {
+          buildInputs = [
+            pkgs.clojure
+            pkgs.openjdk
+          ];
+        };
+
+        formatter = pkgs.nixfmt-rfc-style;
       }
     );
 }

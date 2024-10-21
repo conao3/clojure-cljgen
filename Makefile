@@ -1,5 +1,8 @@
 all:
 
+.PHONY: format
+	nix fmt
+
 .PHONY: build
 	nix build
 
