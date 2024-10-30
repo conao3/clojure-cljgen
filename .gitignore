@@ -1,6 +1,6 @@
 /target
-/.clj-kondo/.cache
-/.clj-kondo/imports
+/.clj-kondo
 /.cpcache
 /.lsp
 /result
+/.nrepl-port
