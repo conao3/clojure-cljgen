@@ -24,6 +24,7 @@
 (defn- template-names
   "Return all template names."
   [config-dir]
+  (log/info (format "config-dir: %s" config-dir))
   (let [template-dir (fs/file config-dir "templates")]
     (->> template-dir
          file-seq
