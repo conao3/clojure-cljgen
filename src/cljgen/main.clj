@@ -80,11 +80,12 @@
 (defn -main
   "The entrypoint."
   [& raw-args]
-  (let [{:keys [opts args]} (cli/parse-args raw-args cli-spec)
+  (let [{:keys [opts args] :as a} (cli/parse-args raw-args cli-spec)
         [cmd & args] args
         config-dir (if (fs/absolute? (:config-dir opts))
                      (:config-dir opts)
                      (str (fs/file (:config-dir opts))))]
+    (log/info ["-main args" a])
     (when (:help opts)
       (println (get-help cli-spec))
       (System/exit 1))
@@ -92,7 +93,7 @@
     (case cmd
       "gen" (let [args (edn/read-string (first args))]
               (when-not (:template opts)
-                (error-and-exit "Must specify --template argument."))
+                (error-and-exit (str "Must specify --template argument.  opts: " opts)))
               (emit-template (:template opts) (:change-dir opts) config-dir args))
       "list" (doseq [elm (template-names config-dir)]
                (println elm))
