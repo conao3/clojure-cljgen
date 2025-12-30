@@ -1,74 +1,119 @@
-# clojure-cljgen
+# cljgen
 
-# Usage
-## Subcommand
-### `list`
-List template names.
+A flexible template generator for Clojure projects and files.
 
-### `gen`
-Generate template.
+## Overview
 
-- `--template <template>`: Specify template name to generate.
-- `-C, --change-dir <dir>` (default: `current-directory`): Specify directory to generate basedir.
+cljgen is a command-line tool that generates project scaffolding and files from customizable templates. It supports parameterized templates with EDN-style configuration, making it easy to create consistent project structures.
 
-Specify parameters via edn style.
+## Installation
+
+Clone this repository and build with your preferred Clojure build tool.
+
+## Usage
+
+### Commands
+
+#### `list`
+
+List all available template names:
+
+```bash
+cljgen list
 ```
+
+#### `gen`
+
+Generate files from a template:
+
+```bash
+cljgen gen --template <template-name> [options] [params]
+```
+
+**Options:**
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--template <template>` | (required) | Template name to generate |
+| `-C, --change-dir <dir>` | Current directory | Base directory for generated output |
+
+**Parameters:**
+
+Pass template parameters using EDN syntax:
+
+```bash
 cljgen gen --template project/clojure '{:repo-name "cljgen"}'
 ```
 
-## Global options
-### `-h, --help`
-Show help.
+### Global Options
 
-### `--config-dir <dir>` (default: `~/.config/cljgen`)
-Specify config dir.
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-h, --help` | - | Show help information |
+| `--config-dir <dir>` | `~/.config/cljgen` | Configuration directory path |
 
-# Config dir
-Config dir is below structure.
+## Configuration
 
-- `template` folder is required.
-- You can put any directory in between. (and this structure into template name)
-- `.cljgen.yml` is marker file to indicate template base-dir.
+### Directory Structure
+
+The configuration directory follows this structure:
+
 ```
-<config-dir>
-└── template
-    └── <path/to/any/template>
-       └── <template-name>
-          ├── .cljgen.yml
-          ├── ...
-          └── ...
+<config-dir>/
+└── template/
+    └── <path/to/template>/
+        └── <template-name>/
+            ├── .cljgen.yml
+            └── ... (template files)
 ```
 
-# Sample
-## sample/templates/file/readme
-Simple one-file example.
+**Key points:**
+
+- The `template` folder is required
+- Nested directories are supported and become part of the template name
+- `.cljgen.yml` marks the root of each template
+
+## Examples
+
+### Simple File Template
+
+A single-file README template:
+
 ```
 sample/templates/file/readme/
 ├── .cljgen.yml
 └── README.md
 ```
 
-## sample/template/project/c
-Simple project.
+### Basic Project Template
+
+A C project with standard structure:
+
 ```
 sample/templates/project/c/
 ├── .cljgen.yml
 ├── Makefile
-└── src
+└── src/
     └── main.c
 ```
 
-## sample/template/project/clojure
-Simple project with parameterize path.
+### Parameterized Project Template
+
+A Clojure project with dynamic path substitution using `{{repo-name}}`:
+
 ```
 sample/templates/project/clojure/
 ├── .cljgen.yml
 ├── deps.edn
 ├── Makefile
-├── src
-│   └── {{repo-name}}
+├── src/
+│   └── {{repo-name}}/
 │       └── core.clj
-└── test
-    └── {{repo-name}}
+└── test/
+    └── {{repo-name}}/
         └── core_test.clj
 ```
+
+## License
+
+See LICENSE file for details.
