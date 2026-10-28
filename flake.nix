@@ -31,7 +31,7 @@
             projectSrc = ./.;
             name = "com.github.conao3/cljgen";
             main-ns = "cljgen.main";
-            jdkRunner = pkgs.jdk17_headless;
+            jdkRunner = pkgs.jdk25_headless;
           };
 
           native = cljpkgs.mkGraalBin {
@@ -42,7 +42,7 @@
         devShell = pkgs.mkShell {
           buildInputs = [
             pkgs.clojure
-            pkgs.openjdk
+            pkgs.jdk25
           ];
         };
 
